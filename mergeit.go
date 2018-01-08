@@ -87,6 +87,12 @@ func mergeitURL(prURL string, mergeMethod string) error {
 	}
 
 	path := strings.Split(parsed.Path, "/")
+	if len(path) != 5 {
+		msg := "URL doesn't look right. Ensure it's a full GitHub PR URL without a trailing slash."
+		Error.Println(msg)
+		return errors.New(msg)
+	}
+
 	owner := path[1]
 	repo := path[2]
 	prNum, err := strconv.Atoi(path[4])
