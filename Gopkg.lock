@@ -39,8 +39,32 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/nlopes/slack"
+  packages = ["."]
+  revision = "107290b5bbaf3e634833346bb4ff389b1c782bc7"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/shomali11/commander"
+  packages = ["."]
+  revision = "28d6c2ce5c395b5f400c988defeaffb2c22cd1a9"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/shomali11/proper"
+  packages = ["."]
+  revision = "0244d42823dce3e0cd5e74e11c9ab1cb92013cbe"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/shomali11/slacker"
+  packages = ["."]
+  revision = "66c5bccdc747bf26bd0d5d5431b109563dfdcb75"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/net"
-  packages = ["context","context/ctxhttp"]
+  packages = ["context","context/ctxhttp","websocket"]
   revision = "d866cfc389cec985d6fda2859936a575a55a3ab6"
 
 [[projects]]
@@ -53,7 +77,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "28a7276518d399b9634904daad79e18b44d481bc"
+  revision = "1792d66dc88e503d3cb2400578221cdf1f7fe26f"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -64,6 +88,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "296031d80880a66e22757c9d89fcac151d6032500f424a426793ad3c7db392ae"
+  inputs-digest = "8e4b0bf4e85692fc86f7d5b86a62bc6a469268da292f36a8a0db625392eaa9a2"
   solver-name = "gps-cdcl"
   solver-version = 1

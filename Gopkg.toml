@@ -32,3 +32,11 @@
 [[constraint]]
   name = "github.com/k0kubun/pp"
   version = "2.3.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/shomali11/slacker"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/nlopes/slack"
