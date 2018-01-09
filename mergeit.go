@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/google/go-github/github"
+	"github.com/k0kubun/pp"
 	"github.com/shomali11/slacker"
 	"golang.org/x/oauth2"
 )
@@ -113,6 +114,13 @@ func mergeit(owner string, repo string, prNum int, mergeMethod string) error {
 		return err
 	}
 
+	statuses, _, err := client.Repositories.GetCombinedStatus(
+		ctx, owner, repo, *pullRequest.Head.SHA, &listOpts)
+	if err != nil {
+		Error.Println(err)
+		return err
+	}
+
 	if pullRequest.GetMerged() {
 		// TODO: This pattern seems repetitive - should I just be returning
 		// error and doing logging outside of this function? Doesn't seem like it
@@ -157,16 +165,11 @@ func mergeit(owner string, repo string, prNum int, mergeMethod string) error {
 	}
 
 	if pullRequest.GetMergeableState() == "blocked" {
-		statuses, _, err := client.Repositories.GetCombinedStatus(
-			ctx, owner, repo, *pullRequest.Head.SHA, &listOpts)
-		if err != nil {
-			Error.Println(err)
-			return err
-		}
-
 		if statuses.GetState() == "success" {
 			msg := "PR up-to-date and build passed, but still can't be merged. Something's wrong."
 			Error.Println(msg)
+			pp.Print(pullRequest)
+			pp.Print(statuses)
 			return errors.New(msg)
 		}
 
@@ -204,5 +207,7 @@ func mergeit(owner string, repo string, prNum int, mergeMethod string) error {
 
 	msg := "Reached end of mergeit() without doing anything. Something's wrong."
 	Error.Println(msg)
+	pp.Print(pullRequest)
+	pp.Print(statuses)
 	return errors.New(msg)
 }
