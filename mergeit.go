@@ -137,15 +137,8 @@ func mergeit(owner string, repo string, prNum int, mergeMethod string) error {
 		return nil
 	}
 
-	if pullRequest.GetMergeableState() == "dirty" {
-		msg := "PR has conflicts that must be manually resolved."
-		Error.Println(msg)
-		return errors.New(msg)
-	}
-
 	if pullRequest.GetMergeableState() == "behind" {
 		Info.Println("PR is out-of-date; merging the latest changes from master.")
-
 		request := &github.RepositoryMergeRequest{
 			// TODO: can't use GetLabel here because it returns string... should I
 			// be dereferencing like *pullRequest.Merged instead of GetMerged()
@@ -164,30 +157,26 @@ func mergeit(owner string, repo string, prNum int, mergeMethod string) error {
 		return nil
 	}
 
-	if pullRequest.GetMergeableState() == "blocked" {
-		if statuses.GetState() == "success" {
-			msg := "PR up-to-date and build passed, but still can't be merged. Something's wrong."
-			Error.Println(msg)
-			pp.Print(pullRequest)
-			pp.Print(statuses)
-			return errors.New(msg)
-		}
-
-		if statuses.GetState() == "failed" {
-			msg := "Build failed and must be manually fixed."
-			Error.Println(msg)
-			return errors.New(msg)
-		}
-
-		if statuses.GetState() == "pending" {
-			Info.Printf("Build in progress. Retrying in %v.\n", retryTimeout)
-			time.Sleep(retryTimeout)
-			mergeit(owner, repo, prNum, mergeMethod)
-			return nil
-		}
+	if pullRequest.GetMergeableState() == "dirty" {
+		msg := "PR has conflicts that must be manually resolved."
+		Error.Println(msg)
+		return errors.New(msg)
 	}
 
-	if pullRequest.GetMergeableState() == "clean" {
+	if statuses.GetState() == "failed" {
+		msg := "Build failed and must be manually fixed."
+		Error.Println(msg)
+		return errors.New(msg)
+	}
+
+	if statuses.GetState() == "pending" {
+		Info.Printf("Build in progress. Retrying in %v.\n", retryTimeout)
+		time.Sleep(retryTimeout)
+		mergeit(owner, repo, prNum, mergeMethod)
+		return nil
+	}
+
+	if pullRequest.GetMergeableState() == "clean" && statuses.GetState() == "success" {
 		Info.Printf("Ready to be merged! Merging with the \"%v\" method.\n", mergeMethod)
 		// XXX: Provide proper squash message here
 		message := ""
