@@ -161,37 +161,51 @@ func mergeit(owner string, repo string, prNum int, mergeMethod string) error {
 		return errors.New(msg)
 	}
 
-	if statuses.GetState() == "failed" {
-		msg := "Build failed and must be manually fixed."
+	// Check statuses manually and don't rely on MergeableState == "blocked".
+	// On repos without branch protection turned on, the status checks can fail
+	// but MergeableState will still be "clean".
+
+	if statuses.GetState() == "failure" {
+		msg := "Status checks failed and must be manually fixed."
 		Error.Println(msg)
 		return errors.New(msg)
 	}
 
 	if statuses.GetState() == "pending" {
-		Info.Printf("Build in progress. Retrying in %v.\n", retryTimeout)
+		Info.Printf("Status checks in progress. Retrying in %v.\n", retryTimeout)
 		time.Sleep(retryTimeout)
 		return mergeit(owner, repo, prNum, mergeMethod)
 	}
 
-	if pullRequest.GetMergeableState() == "clean" && statuses.GetState() == "success" {
-		Info.Printf("Ready to be merged! Merging with the \"%v\" method.\n", mergeMethod)
-		// XXX: Provide proper squash message here
-		message := ""
-
-		opts := &github.PullRequestOptions{
-			MergeMethod: mergeMethod,
-		}
-		_, _, err := client.PullRequests.Merge(ctx, owner, repo, prNum, message, opts)
-		if err != nil {
-			Error.Println(err)
-			return err
+	if statuses.GetState() == "success" {
+		if pullRequest.GetMergeableState() == "blocked" {
+			msg := "Status checks passed but still blocked from merging. Tell @pmdarrow to investigate!"
+			Error.Println(msg)
+			pp.Print(pullRequest)
+			pp.Print(statuses)
+			return errors.New(msg)
 		}
 
-		Info.Println("PR successfully merged.")
-		return nil
+		if pullRequest.GetMergeableState() == "clean" {
+			Info.Printf("Ready to be merged! Merging with the \"%v\" method.\n", mergeMethod)
+			// XXX: Provide proper squash message here
+			message := ""
+
+			opts := &github.PullRequestOptions{
+				MergeMethod: mergeMethod,
+			}
+			_, _, err := client.PullRequests.Merge(ctx, owner, repo, prNum, message, opts)
+			if err != nil {
+				Error.Println(err)
+				return err
+			}
+
+			Info.Println("PR successfully merged.")
+			return nil
+		}
 	}
 
-	msg := "Reached end of mergeit() without doing anything. Something's wrong."
+	msg := "Reached end of mergeit() without doing anything. Tell @pmdarrow to investigate!"
 	Error.Println(msg)
 	pp.Print(pullRequest)
 	pp.Print(statuses)
