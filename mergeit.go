@@ -17,7 +17,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-const retryTimeout = time.Second * 10
+const retryTimeout = time.Second * 30
 
 var (
 	Info  *log.Logger
