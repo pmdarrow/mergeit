@@ -133,8 +133,7 @@ func mergeit(owner string, repo string, prNum int, mergeMethod string) error {
 	if pullRequest.GetMergeableState() == "unknown" {
 		Info.Printf("Merge state unknown, retrying in %v.\n", retryTimeout)
 		time.Sleep(retryTimeout)
-		mergeit(owner, repo, prNum, mergeMethod)
-		return nil
+		return mergeit(owner, repo, prNum, mergeMethod)
 	}
 
 	if pullRequest.GetMergeableState() == "behind" {
@@ -153,8 +152,7 @@ func mergeit(owner string, repo string, prNum int, mergeMethod string) error {
 		}
 		Info.Printf("PR up-to-date, starting over in %v.\n", retryTimeout)
 		time.Sleep(retryTimeout)
-		mergeit(owner, repo, prNum, mergeMethod)
-		return nil
+		return mergeit(owner, repo, prNum, mergeMethod)
 	}
 
 	if pullRequest.GetMergeableState() == "dirty" {
@@ -172,8 +170,7 @@ func mergeit(owner string, repo string, prNum int, mergeMethod string) error {
 	if statuses.GetState() == "pending" {
 		Info.Printf("Build in progress. Retrying in %v.\n", retryTimeout)
 		time.Sleep(retryTimeout)
-		mergeit(owner, repo, prNum, mergeMethod)
-		return nil
+		return mergeit(owner, repo, prNum, mergeMethod)
 	}
 
 	if pullRequest.GetMergeableState() == "clean" && statuses.GetState() == "success" {
