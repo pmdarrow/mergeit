@@ -40,3 +40,6 @@
 [[constraint]]
   branch = "master"
   name = "github.com/nlopes/slack"
+
+[metadata.heroku]
+  root-package = "github.com/pmdarrow/mergeit"

@@ -1,0 +1,14 @@
+language: go
+go:
+  - master
+dist: trusty
+script:
+  gofmt -l mergeit.go
+deploy:
+  provider: heroku
+  app: mergeit
+  api_key:
+    secure: Bc9qPKb86/Voln+2cDEADKszBJfnAbesugKqdgPot3vVWK6r0IPnnSavtzMtN0IhU+lCjhxmODdqCgxnvmk9nkG2kXHs5Di5sFCJKmLAC/oY3bYMA86xRyup/FnHoRkjnz8H5J49VtIpGLUw2Wc+sNfKpFQ43wnqeT9mAkjFrm0HvT6nvcQue3L4ES8O6NBZnPugjNWxWWLNY7kPlrf6xq6lofCtSybnEXbj7DNW8HW8Xe3/fQwvQBTuHrEzbDYME8+/ByZ5OhAZw6DO0GoFKkYJRNJGocB+WAshu1tzABihiriowTfuuIgaL9JlC6eq0cK0ujxX5OAIZUjf0cQe34D9oPOm8FKeVpEKnyH8vuo+6Jhs/YqDpTuzVI+qbFOemo4zOOuVRWevIB2USPsA5aXMJ6jzUt86Z/SPZPmeFc04jvwSm3WRPKELpS6Ry6W75Xlx45IdU3ipDZxiyuxOa2kKTEKmKrsAFgvwb6mGHBRIm5sNon7hMccZyxZvR9BQ7bl5Ixzhxde4UM3EZG1QYX5yhOYnStW1FiI8nx0fZRM2Wz9uUxLI7YFlu0U7EFyW/wuWvOLruMZyoI8T75G1VSLIusK7je2cAVeDnv2pU7sVCHpjB/ExqSYeQ3nSsKM4wV2f2/50CJtOoXcmBeqIPC3qVo1PNJzMlWE9xC2cyAc=
+  on:
+    branch: master
+    repo: pmdarrow/mergeit
