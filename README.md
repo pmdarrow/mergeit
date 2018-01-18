@@ -1,25 +1,26 @@
 [![Build Status](https://travis-ci.org/pmdarrow/mergeit.svg?branch=master)](https://travis-ci.org/pmdarrow/mergeit)
 
-# mergeit
+# mergeit!
 
-- Keeps a PR branch up to date with master as master changes
-- if PR can be merged (all things approved, for example) it will do so
-- add it to a slack channel
-- trigger inside slack via `@mergeit merge https://github.com/full/repo/pull/123`
+- Keeps a PR up to date by continually merging in the base branch as it changes
+- When all status checks pass and the PR is up-to-date, it will be squashed and merged
 
-## build
+## Build
 
- `go dep`
- `go build`
-
-## run
-
-Set ENVs:
 ```
-SLACK_ACCESS_TOKEN
-GH_ACCESS_TOKEN
+$ dep ensure
+$ go build
 ```
 
-then `./mergeit`
+## Run
 
-Or, you know, deploy to <insert hosted thing here>
+```
+$ export SLACK_ACCESS_TOKEN=secret-here
+$ export GH_ACCESS_TOKEN=secret-here
+$ ./mergeit
+```
+
+## Usage
+
+- Invite @mergeit to a Slack channel
+- Tell it to merge your PR: `@mergeit merge https://github.com/full/repo/pull/123`
